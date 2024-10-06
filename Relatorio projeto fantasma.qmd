@@ -1,0 +1,35 @@
+---
+title: "Projeto fantasma"
+format: pdf
+editor: visual
+output-file: "Projeto fantasma"
+---
+
+```{r}
+#| include: false
+source("rdocs/source/packages.R")
+```
+
+```{r}
+# Rodar apenas uma vez na vida!
+## Instalando o tinytex(pacote apenas)
+### CRAN version
+install.packages('tinytex')
+
+### or the development version on GitHub
+remotes::install_github('rstudio/tinytex')
+
+## Baixando o tinytex
+library(tinytex)
+tinytex::install_tinytex()
+```
+
+# Introdução
+
+testando o git hub
+
+# Referencial Teórico
+
+# Análises
+
+# Conclusões
