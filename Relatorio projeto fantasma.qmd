@@ -1,6 +1,6 @@
 ---
 title: "Projeto fantasma"
-output: html_document
+output: pdf
 editor: visual
 ---
 
@@ -11,9 +11,10 @@ editor: visual
 
 
 ### or the development version on GitHub
-
+remotes::install_github('rstudio/tinytex')
 
 ## Baixando o tinytex
+library(tinytex)
 
 ```
 
@@ -31,7 +32,7 @@ A manipulação dos dados e a confecção das figuras foram feitas com o softwar
 
 ### 1. Top 5 países com maior número de mulheres medalistas
 
-Como pode ser observado na figura 1, os Estados Unidos lidera o ranque com uma diferença significativa da Rússia, seguida pela China, Australia e Alemanha.
+Como pode ser observado na figura 1, os Estados Unidos lidera o ranque com uma diferença significativa da Rússia, seguida pela China, Australia e Alemanha. Esse resultado pode ser explicado não só pelo fato desses países terem grandes populações como também pelo seus investimentos
 
 #### Figura 1
 
