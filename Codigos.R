@@ -1,41 +1,3 @@
----
-title: "Projeto fantasma"
-output: html_document
-editor: visual
----
-
-```{r,echo=FALSE,message=FALSE, warning=FALSE}
-# Rodar apenas uma vez na vida!
-## Instalando o tinytex(pacote apenas)
-### CRAN version
-
-
-### or the development version on GitHub
-
-
-## Baixando o tinytex
-
-```
-
-# Introdução
-
-A fim de atender a demanda do cliente, foi feita uma analise estatistica descritiva acerca dos atletas que participaram das olimpiadas dos anos de 2000 até 2016.
-
-O banco de dados foi disponibilizado pelo cliente. No total foram observados 38366 atletas diferentes.
-
-A manipulação dos dados e a confecção das figuras foram feitas com o software estatístico R versão.  
-
-# Referencial Teórico
-
-# Análises
-
-### 1. Top 5 países com maior número de mulheres medalistas
-
-Como pode ser observado na figura 1, os Estados Unidos lidera o ranque com uma diferença significativa da Rússia, seguida pela China, Australia e Alemanha.
-
-#### Figura 1
-
-```{r,echo=FALSE,message=FALSE, warning=FALSE,}
 library(readxl)
 library(tidyverse)
 theme_estat <- function(...) {
@@ -58,7 +20,7 @@ theme_estat <- function(...) {
     )
   )
 }
-###########
+#########################################
 estat_colors <- c(
   "#A11D21", "#003366", "#CC9900",
   "#663333", "#FF6600", "#CC9966",
@@ -92,28 +54,18 @@ classes <- PF %>%
     label = str_c(n, " (", freq, ")") %>% str_squish()
   )
 c<-classes %>% filter(relative_freq>5)
-Figura1<-ggplot(c)+aes(x = fct_reorder(País, n, .desc=T), y = n, label = label) +
+ggplot(c)+aes(x = fct_reorder(País, n, .desc=T), y = n, label = label) +
   geom_bar(stat = "identity", fill = "#A11D21", width = 0.7)+geom_text(position = position_dodge(width = .9),vjust = -0.5,size = 3)+theme_estat()+labs(x="Países",y="Quantidade")
-Figura1
-####################################################################################
-```
-
-### 2. IMC por esportes
-
-Os valores do índice de massa corporal(IMC) dos atletas que praticam judô, ginástica, badminton e atletismo assume a seguinte configuração:
-
-#### Figura 2
-
-```{r,echo=FALSE,message=FALSE, warning=FALSE}
+#####################################################################################
+length(unique(P$Nome))
+Pd<-P[!duplicated(P$Nome),]
+length(Pd$Sexo=="F")
+###########Análise 2##############################
 PM<-P[!(is.na(P[,9])),]
 PMD<-PM[!duplicated(PM$Nome),]
 PMD$IMC<-PMD$`Peso(kg)`/(PMD$`Altura(m)`)^2
 PA2<-PMD[PMD[,7]==c("Badminton","Judo","Gymnastics","Athletics"),]
-ggplot(PA2)+aes(x=reorder(Esporte, IMC, "median"),y=IMC)+geom_boxplot(fill = c("#A11D21"), width = 0.5)+theme_estat()+stat_summary(fun = "mean", geom = "point", shape = 23, size = 3, fill = "white")+xlab("Esporte")
-```
+ggplot(PA2)+aes(x=reorder(Esporte, IMC, median),y=IMC)+geom_boxplot(fill = c("#A11D21"), width = 0.5)+theme_estat()+stat_summary(fun = "mean", geom = "point", shape = 23, size = 3, fill = "white")+xlab("Esporte")
+round(mean(PA2[PA2[,7]=="Judo",]$IMC,na.rm = T),digits = 2)
+ggplot(PA2)+aes(x=Esporte,y=IMC)+geom_boxplot(fill = c("#A11D21"), width = 0.5)+theme_estat()+stat_summary(fun = "mean", geom = "point", shape = 23, size = 3, fill = "white")+xlab("Esporte")
 
-#### Figura 3
-
-Pode se observar que o IMC segue um comportamento diferente para cada esporte. No judô há diversas categorias para pessoas com pesos diferentes, o que explica a maior dispersão dos dados (colocar medida de dispersao). Já nos outros três, os atletas tendem a ter o IMC na faixa de X
-
-# Conclusões
