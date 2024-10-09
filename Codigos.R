@@ -42,8 +42,15 @@ P$`Altura(m)`<-P$`Altura(m)`/100
 P$`Peso(kg)`<-P$`Peso(kg)`/2.205
 #Analise 1########################################################
 PF<-P[P[,2]=="F",]
+PF2<-PF
 PF<-PF[!(is.na(PF[,9])),]
 PF<-PF[!duplicated(PF$Nome),]
+PF2<-PF2[!duplicated(PF2$Nome),]
+sd(classes$n)
+length(classes$n)
+Psd<-PF2  %>% count(País,Medalha)
+Psd<-Psd[!(is.na(Psd[,2])),]
+sum(Psd$n)
 classes <- PF %>%
   filter(!is.na(País)) %>%
   count(País) %>%
@@ -54,6 +61,7 @@ classes <- PF %>%
     label = str_c(n, " (", freq, ")") %>% str_squish()
   )
 c<-classes %>% filter(relative_freq>5)
+c2<-classes %>% filter(n>5)
 ggplot(c)+aes(x = fct_reorder(País, n, .desc=T), y = n, label = label) +
   geom_bar(stat = "identity", fill = "#A11D21", width = 0.7)+geom_text(position = position_dodge(width = .9),vjust = -0.5,size = 3)+theme_estat()+labs(x="Países",y="Quantidade")
 #####################################################################################
@@ -65,7 +73,7 @@ PM<-P[!(is.na(P[,9])),]
 PMD<-PM[!duplicated(PM$Nome),]
 PMD$IMC<-PMD$`Peso(kg)`/(PMD$`Altura(m)`)^2
 PA2<-PMD[PMD[,7]==c("Badminton","Judo","Gymnastics","Athletics"),]
-ggplot(PA2)+aes(x=reorder(Esporte, IMC, median),y=IMC)+geom_boxplot(fill = c("#A11D21"), width = 0.5)+theme_estat()+stat_summary(fun = "mean", geom = "point", shape = 23, size = 3, fill = "white")+xlab("Esporte")
+ggplot(PA2)+aes(x=reorder(Esporte, IMC, "median"),y=IMC)+geom_boxplot(fill = c("#A11D21"), width = 0.5)+theme_estat()+stat_summary(fun = "mean", geom = "point", shape = 23, size = 3, fill = "white")+xlab("Esporte")
 round(mean(PA2[PA2[,7]=="Judo",]$IMC,na.rm = T),digits = 2)
 ggplot(PA2)+aes(x=Esporte,y=IMC)+geom_boxplot(fill = c("#A11D21"), width = 0.5)+theme_estat()+stat_summary(fun = "mean", geom = "point", shape = 23, size = 3, fill = "white")+xlab("Esporte")
 

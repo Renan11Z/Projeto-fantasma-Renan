@@ -1,7 +1,8 @@
 ---
 title: "Projeto fantasma"
-output: pdf
+output: PDF
 editor: visual
+format: pdf
 ---
 
 ```{r,echo=FALSE,message=FALSE, warning=FALSE}
@@ -20,11 +21,11 @@ library(tinytex)
 
 # Introdução
 
-A fim de atender a demanda do cliente, foi feita uma analise estatistica descritiva acerca dos atletas que participaram das olimpiadas dos anos de 2000 até 2016.
+A fim de atender a demanda do cliente, foi feita uma análise estatistica descritiva acerca dos atletas que participaram das olimpiadas dos anos de 2000 até 2016.
 
-O banco de dados foi disponibilizado pelo cliente. No total foram observados 38366 atletas diferentes.
+O banco de dados foi disponibilizado pelo cliente. Foi observado nome, sexo, idade, país, peso, altura, esporte, modalidade e medalha adquirida de 38366 atletas diferentes.
 
-A manipulação dos dados e a confecção das figuras foram feitas com o software estatístico R versão.  
+A manipulação dos dados e a confecção das figuras foram feitas com o software estatístico R versão 4.3.3.  
 
 # Referencial Teórico
 
@@ -32,7 +33,7 @@ A manipulação dos dados e a confecção das figuras foram feitas com o softwar
 
 ### 1. Top 5 países com maior número de mulheres medalistas
 
-Como pode ser observado na figura 1, os Estados Unidos lidera o ranque com uma diferença significativa da Rússia, seguida pela China, Australia e Alemanha. Esse resultado pode ser explicado não só pelo fato desses países terem grandes populações como também pelo seus investimentos
+Como pode ser observado na figura 1, os Estados Unidos lidera o ranque com uma diferença significativa da Rússia, seguida pela China, Australia e Alemanha. Juntos esses 5 países sozinhos tem 43,7% das mulheres medalistas. Esse resultado mostra a grande desigualdade na amostra, com apenas 51 países tendo mais de 5 mulheres medalistas.
 
 #### Figura 1
 
