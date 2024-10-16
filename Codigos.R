@@ -63,7 +63,7 @@ classes <- PF %>%
 c<-classes %>% filter(relative_freq>5)
 c2<-classes %>% filter(n>5)
 ggplot(c)+aes(x = fct_reorder(País, n, .desc=T), y = n, label = label) +
-  geom_bar(stat = "identity", fill = "#A11D21", width = 0.7)+geom_text(position = position_dodge(width = .9),vjust = -0.5,size = 3)+theme_estat()+labs(x="Países",y="Quantidade")
+  geom_bar(stat = "identity", fill = "#A11D21", width = 0.7)+geom_text(position = position_dodge(width = .9),vjust = -0.5,size = 3)+theme_estat()+labs(x="Países",y="Frequência")
 #####################################################################################
 length(unique(P$Nome))
 Pd<-P[!duplicated(P$Nome),]

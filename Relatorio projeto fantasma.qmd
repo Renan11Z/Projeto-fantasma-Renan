@@ -12,7 +12,7 @@ format: pdf
 
 
 ### or the development version on GitHub
-remotes::install_github('rstudio/tinytex')
+
 
 ## Baixando o tinytex
 library(tinytex)
@@ -35,7 +35,7 @@ A manipulação dos dados e a confecção das figuras foram feitas com o softwar
 
 Como pode ser observado na figura 1, os Estados Unidos lidera o ranque com uma diferença significativa da Rússia, seguida pela China, Australia e Alemanha. Juntos esses 5 países sozinhos tem 43,7% das mulheres medalistas. Esse resultado mostra a grande desigualdade na amostra, com apenas 51 países tendo mais de 5 mulheres medalistas.
 
-#### Figura 1
+#### Figura 1: gráfico de colunas
 
 ```{r,echo=FALSE,message=FALSE, warning=FALSE,}
 library(readxl)
@@ -95,7 +95,7 @@ classes <- PF %>%
   )
 c<-classes %>% filter(relative_freq>5)
 Figura1<-ggplot(c)+aes(x = fct_reorder(País, n, .desc=T), y = n, label = label) +
-  geom_bar(stat = "identity", fill = "#A11D21", width = 0.7)+geom_text(position = position_dodge(width = .9),vjust = -0.5,size = 3)+theme_estat()+labs(x="Países",y="Quantidade")
+  geom_bar(stat = "identity", fill = "#A11D21", width = 0.7)+geom_text(position = position_dodge(width = .9),vjust = -0.5,size = 3)+theme_estat()+labs(x="Países",y="Frequência")
 Figura1
 ####################################################################################
 ```
@@ -104,7 +104,7 @@ Figura1
 
 Os valores do índice de massa corporal(IMC) dos atletas que praticam judô, ginástica, badminton e atletismo assume a seguinte configuração:
 
-#### Figura 2
+#### Figura 2: Boxplot do IMC pelo Esporte
 
 ```{r,echo=FALSE,message=FALSE, warning=FALSE}
 PM<-P[!(is.na(P[,9])),]
