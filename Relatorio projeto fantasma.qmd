@@ -33,7 +33,6 @@ A manipulação dos dados e a confecção das figuras foram feitas com o softwar
 
 ### 1. Top 5 países com maior número de mulheres medalistas
 
-
 #### Figura 1: gráfico de colunas do número de mulheres medalistas
 
 ```{r,echo=FALSE,message=FALSE, warning=FALSE,}
@@ -175,8 +174,7 @@ Figura1
 ####################################################################################
 ```
 
-Como pode ser observado na figura 1, o ranque é formado por Estados unidos, Rússia, China, Australia e Alemanha respectivamente. Os Estados Unidos ocupa o primeiro lugar do ranque com mais de 100 medalhas de diferença da Rússia. Juntos esses 5 países sozinhos tem 43,7% das mulheres medalistas. 
-
+Como pode ser observado na figura 1, o ranque é formado por Estados unidos, Rússia, China, Australia e Alemanha respectivamente. Os Estados Unidos ocupa o primeiro lugar do ranque com mais de 100 medalhas de diferença da Rússia. Juntos esses 5 países sozinhos tem 43,7% das mulheres medalistas.
 
 ### 2. IMC por esportes
 
@@ -195,12 +193,61 @@ ggplot(PA2)+aes(x=fct_reorder(Esporte, IMC, "median"),y=IMC)+geom_boxplot(fill =
 ```
 
 #### Figura 3
+
 ```{r,echo=FALSE,message=FALSE, warning=FALSE}
-#PA2%>%group_by(Esporte)%>%print_quadro_resumo(var_name = IMC)
+Tabela<-PA2%>%group_by(Esporte)
+print_quadro_resumo(Tabela,var_name = IMC)
 ```
 
 Pode se observar que o IMC segue um comportamento diferente para cada esporte. No judô há diversas categorias para pessoas com pesos diferentes e é um esporte que exige maior massa muscular, o que explica a maior dispersão dos dados (Desvio padrão=6.24) e uma média elevada(26.78) se comparada com as dos outros esportes. As médias do Badminton, da Ginastica e do Atletismo são semelhantes: 22.17, 20.76 e 22.12 respectivamente, entretanto cada um tem uma configuração única. No atletismo há uma assimetria positiva, na ginastica há uma assimetria negativa e no badminton a distribuição é simetrica e centralizada(desvio padrão=1.61). Em geral, quanto mais um esporte ou modalidade exige massa muscular, maior o IMC.
 
-### 3. 
+### 3. Top 3 medalhistas gerais
+
+Os três atletas que conquistaram mais medalhas nessas 5 edições dos jogos olímpicos foram: Michael Fred Phelps com 28 medalhas, Natalie Anne Coughlin e Ryan Steven Lochte ambos com 12 medalhas. Os três são estadunidenses e tem como esporte a natação.
+
+#### Figura 4: Gráfico de colunas da quantidade de medalhas pelo tipo da medalha
+
+```{r,echo=FALSE,message=FALSE, warning=FALSE}
+PA3.1<-P[P[,1]=="Michael Fred Phelps, II",]
+PA3.2<-P[P[,1]=="Natalie Anne Coughlin (-Hall)",]
+PA3.3<-P[P[,1]=="Ryan Steven Lochte",]
+PA3<-rbind(PA3.1,PA3.2,PA3.3)
+PA3[c(PA3[,9]=="Gold"),9]<-"Ouro"
+PA3[c(PA3[,9]=="Silver"),9]<-"Prata"
+GA3 <- PA3 %>%
+  mutate(Nome = case_when(
+    Nome %>% str_detect("Michael Fred Phelps, II") ~ "Michael Fred Phelps, II",
+    Nome %>% str_detect("Ryan Steven Lochte") ~ "Ryan Steven Lochte",
+    Nome %>% str_detect("Natalie Anne Coughlin (-Hall)") ~ "Natalie Anne Coughlin (-Hall)"
+  )) %>%
+  group_by(Nome, Medalha ) %>%
+  summarise(freq = n()) %>%
+  mutate(
+    freq_relativa = round(freq / sum(freq) * 100,1)
+  )
+GA3[c(is.na(GA3[,1])==TRUE),1]<-"Natalie Anne Coughlin (-Hall)"
+porcentagens <- str_c(GA3$freq_relativa, "%") %>% str_replace("
+\\.", ",")
+legendas <- str_squish(str_c(GA3$freq, " (", porcentagens, ")")
+)
+ordem<-c("Bronze","Prata","Ouro")
+GA3$Medalha<-fct_relevel(c(GA3$Medalha),ordem)
+ggplot(GA3) +
+  aes(
+    x = fct_reorder(Nome, freq, .desc = T), y = freq,
+    fill = Medalha, label = legendas
+  ) +
+  geom_col(position = position_dodge2(preserve = "single", padding =
+                                        0)) +
+  geom_text(
+    position = position_dodge(width = .9),
+    vjust = -0.5, hjust = 0.5,
+    size = 3
+  ) +
+  labs(x = "Nome", y = "Frequência") +
+  theme_estat()
+```
+
+Observa-se pelo gráfico a relação entre o atleta e o tipo de medalha. Conforme o valor da medalha aumentou, Natalie conquistou menos medalhas, enquanto para Michael e Ryan o comportamento foi o contrário. Também é possivel observar que a grande maioria das medalhas que Michael Fred Phelps conquistou foram medalhas de ouro. O coeficiente V de cramer assumiu o valor de 0.3505 demonstrando uma associação fraca-moderada.
 
 # Conclusões

@@ -1,5 +1,6 @@
 library(readxl)
 library(tidyverse)
+library(rcompanion)
 theme_estat <- function(...) {
   theme <- ggplot2::theme_bw() +
     ggplot2::theme(
@@ -167,4 +168,50 @@ GMe<-round(median(PA2[PA2[,7]=="Ginastica",]$IMC,na.rm = T),digits = 2)
 Gsd<-round(sd(PA2[PA2[,7]=="Ginastica",]$IMC,na.rm = T),digits = 2)
 (GM-GMe)/Gsd
 print_quadro_resumo(PA2,var_name = IMC)
-
+#####################Analise 3###############################
+#descobrindo os maiores medalhistas
+PT3<-P
+PT3<-mutate(PT3,QM=is.character(P$Medalha))
+PT3$QM<-as.numeric(PT3$QM)
+PT3<-PT3%>%group_by(Nome)%>%summarise(Total=sum(QM))
+#Michael Fred Phelps, II   Natalie Anne Coughlin (-Hall)    Ryan Steven Lochte
+PA3.1<-P[P[,1]=="Michael Fred Phelps, II",]
+PA3.2<-P[P[,1]=="Natalie Anne Coughlin (-Hall)",]
+PA3.3<-P[P[,1]=="Ryan Steven Lochte",]
+PA3<-rbind(PA3.1,PA3.2,PA3.3)
+PA3[c(PA3[,9]=="Gold"),9]<-"Ouro"
+PA3[c(PA3[,9]=="Silver"),9]<-"Prata"
+GA3 <- PA3 %>%
+  mutate(Nome = case_when(
+    Nome %>% str_detect("Michael Fred Phelps, II") ~ "Michael Fred Phelps, II",
+    Nome %>% str_detect("Ryan Steven Lochte") ~ "Ryan Steven Lochte",
+    Nome %>% str_detect("Natalie Anne Coughlin (-Hall)") ~ "Natalie Anne Coughlin (-Hall)"
+  )) %>%
+  group_by(Nome, Medalha ) %>%
+  summarise(freq = n()) %>%
+  mutate(
+    freq_relativa = round(freq / sum(freq) * 100,1)
+  )
+GA3[c(is.na(GA3[,1])==TRUE),1]<-"Natalie Anne Coughlin (-Hall)"
+porcentagens <- str_c(GA3$freq_relativa, "%") %>% str_replace("
+\\.", ",")
+legendas <- str_squish(str_c(GA3$freq, " (", porcentagens, ")")
+)
+ordem<-c("Bronze","Prata","Ouro")
+GA3$Medalha<-fct_relevel(c(GA3$Medalha),ordem)
+ggplot(GA3) +
+  aes(
+    x = fct_reorder(Nome, freq, .desc = T), y = freq,
+    fill = Medalha, label = legendas
+  ) +
+  geom_col(position = position_dodge2(preserve = "single", padding =
+                                        0)) +
+  geom_text(
+    position = position_dodge(width = .9),
+    vjust = -0.5, hjust = 0.5,
+    size = 3
+  ) +
+  labs(x = "Nome", y = "Frequência") +
+  theme_estat()
+tabela<-xtabs(~PA3$Nome+PA3$Medalha)
+cramerV(tabela)
