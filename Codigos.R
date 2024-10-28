@@ -215,3 +215,4 @@ ggplot(GA3) +
   theme_estat()
 tabela<-xtabs(~PA3$Nome+PA3$Medalha)
 cramerV(tabela)
+
