@@ -25,13 +25,15 @@ A fim de atender a demanda do cliente, foi feita uma análise estatistica descri
 
 O banco de dados foi disponibilizado pelo cliente. Foi observado nome, sexo, idade, país, peso, altura, esporte, modalidade e medalha adquirida de 38366 atletas diferentes.
 
-A manipulação dos dados e a confecção das figuras foram feitas com o software estatístico R versão 4.3.3.  
+A manipulação e análise dos dados além da confecção das figuras foram feitas com auxilio do software estatístico R versão 4.3.3.
 
 # Referencial Teórico
 
 # Análises
 
 ### 1. Top 5 países com maior número de mulheres medalistas
+
+Está análise tem o intuito de identificar quais são os países com maior quantidade de mulheres medalhistas. Para isso foram utilizadas as variáveis sexo e medalhas, a primeira sendo qualitativa nominal e a sugunda sendo qualitativa ordinal.
 
 #### Figura 1: gráfico de colunas do número de mulheres medalistas
 
@@ -178,7 +180,7 @@ Como pode ser observado na figura 1, o ranque é formado por Estados unidos, Rú
 
 ### 2. IMC por esportes
 
-O valore do índice de massa corporal(IMC) é um importante indicador da saúde de uma pessoa. o número representa o quanto a pessoa tem de massa muscular + massa de gordura + massa óssea.
+Essa análise tem como objetivo entender o comportamento do IMC nos esportes selecionados. Para tal, foram utilizadas as variáveis esporte e IMC,respectivamente qualitativa nominal e quantitativa continua. A variável IMC foi obtida dividindo o peso do atleta pela  altura ao quadrado.O valor do índice de massa corporal(IMC) é um importante indicador da saúde de uma pessoa. o número representa o quanto a pessoa tem de massa muscular + massa de gordura + massa óssea. 
 
 #### Figura 2: Boxplot do IMC pelo Esporte
 
@@ -186,9 +188,10 @@ O valore do índice de massa corporal(IMC) é um importante indicador da saúde 
 PM<-P[!(is.na(P[,9])),]
 PMD<-PM[!duplicated(PM$Nome),]
 PMD$IMC<-PMD$`Peso(kg)`/(PMD$`Altura(m)`)^2
-PA2<-PMD[PMD[,7]==c("Badminton","Judo","Gymnastics","Athletics"),]
+PA2<-PMD[PMD[,7]==c("Badminton","Judo","Gymnastics","Athletics","Football"),]
 PA2[c(PA2[,7]=="Athletics"),7]<-"Atletismo"
 PA2[c(PA2[,7]=="Gymnastics"),7]<-"Ginastica"
+PA2[c(PA2[,7]=="Football"),7]<-"Futebol"
 ggplot(PA2)+aes(x=fct_reorder(Esporte, IMC, "median"),y=IMC)+geom_boxplot(fill = c("#A11D21"), width = 0.5)+theme_estat()+stat_summary(fun = "mean", geom = "point", shape = 23, size = 3, fill = "white")+xlab("Esporte")
 ```
 
@@ -199,11 +202,11 @@ Tabela<-PA2%>%group_by(Esporte)
 print_quadro_resumo(Tabela,var_name = IMC)
 ```
 
-Pode se observar que o IMC segue um comportamento diferente para cada esporte. No judô há diversas categorias para pessoas com pesos diferentes e é um esporte que exige maior massa muscular, o que explica a maior dispersão dos dados (Desvio padrão=6.24) e uma média elevada(26.78) se comparada com as dos outros esportes. As médias do Badminton, da Ginastica e do Atletismo são semelhantes: 22.17, 20.76 e 22.12 respectivamente, entretanto cada um tem uma configuração única. No atletismo há uma assimetria positiva, na ginastica há uma assimetria negativa e no badminton a distribuição é simetrica e centralizada(desvio padrão=1.61). Em geral, quanto mais um esporte ou modalidade exige massa muscular, maior o IMC.
+Pode se observar que o IMC segue um comportamento diferente para cada esporte. No judô há diversas categorias para pessoas com pesos diferentes e é um esporte que exige maior massa muscular, o que explica a maior dispersão dos dados (Desvio padrão=6.24) e uma média elevada(26.78) se comparada com as dos outros esportes. As médias do Badminton, da Ginastica, do futebol e do Atletismo são semelhantes: 22.17, 20.76, 22.72 e 22.12 respectivamente, entretanto cada um tem uma configuração única. No atletismo há uma assimetria positiva, na ginastica há uma assimetria negativa e no badminton e no futebol a distribuição é simetrica e centralizada(desvio padrão=1.61). Em geral, quanto mais um esporte ou modalidade exige massa muscular, maior o IMC.
 
 ### 3. Top 3 medalhistas gerais
 
-Os três atletas que conquistaram mais medalhas nessas 5 edições dos jogos olímpicos foram: Michael Fred Phelps com 28 medalhas, Natalie Anne Coughlin e Ryan Steven Lochte ambos com 12 medalhas. Os três são estadunidenses e tem como esporte a natação.
+Esta análise tem como objetivo observar quais são os 3 maiores medalhistas e verificar se há relação entre o medalhista e o tipo de medalha conquistada. Os três atletas que conquistaram mais medalhas nessas 5 edições dos jogos olímpicos foram: Michael Fred Phelps com 28 medalhas, Natalie Anne Coughlin e Ryan Steven Lochte ambos com 12 medalhas. Os três são estadunidenses e tem como esporte a natação.
 
 #### Figura 4: Gráfico de colunas da quantidade de medalhas pelo tipo da medalha
 
@@ -234,7 +237,7 @@ ordem<-c("Bronze","Prata","Ouro")
 GA3$Medalha<-fct_relevel(c(GA3$Medalha),ordem)
 ggplot(GA3) +
   aes(
-    x = fct_reorder(Nome, freq, .desc = T), y = freq,
+    x = fct_reorder(Nome, Nome, .desc = T), y = freq,
     fill = Medalha, label = legendas
   ) +
   geom_col(position = position_dodge2(preserve = "single", padding =
@@ -244,10 +247,38 @@ ggplot(GA3) +
     vjust = -0.5, hjust = 0.5,
     size = 3
   ) +
-  labs(x = "Nome", y = "Frequência") +
+  labs(x = "Atleta", y = "Frequência") +
   theme_estat()
 ```
 
-Observa-se pelo gráfico a relação entre o atleta e o tipo de medalha. Conforme o valor da medalha aumentou, Natalie conquistou menos medalhas, enquanto para Michael e Ryan o comportamento foi o contrário. Também é possivel observar que a grande maioria das medalhas que Michael Fred Phelps conquistou foram medalhas de ouro. O coeficiente V de cramer assumiu o valor de 0.3505 demonstrando uma associação fraca-moderada.
+Observa-se pelo gráfico a relação entre o atleta e o tipo de medalha. Conforme o valor da medalha aumentou, Natalie conquistou menos medalhas, enquanto para Michael e Ryan o comportamento foi o contrário. Também é possivel observar que a grande maioria das medalhas que Michael Fred Phelps conquistou foram medalhas de ouro. 
+
+### 4. Relação peso x altura
+
+Esta análise tem o intuito de compreender a relação entre o peso e a altura dos atletas. Para isso, foi utilizado as variáveis peso(Kg) e altura(m), ambas são quantitativas continuas. O comportamento conjunto das variáveis está ilustrado pelo gráfico de dispersão a seguir:
+
+#### Figura 5: Gráfico de dispersão do peso pela altura
+
+```{r,echo=FALSE,message=FALSE, warning=FALSE}
+ggplot(PMD)+geom_point(aes(x=`Peso(kg)`,y=`Altura(m)`),colour = "#A11D21", size = 3)+theme_estat()
+```
+
+#### Quadro 2: Medidas resumo das variáveis peso e altura
+```{r,echo=FALSE,message=FALSE, warning=FALSE}
+Teste<-matrix(c(1:24),nrow=8)
+Teste<-as.data.frame(Teste)
+colnames(Teste)<-c("Medida","Peso(Kg)","Altura(m)")
+Teste$Medida<-c("Média","Desvio Padrão","Variância","Mínimo","1° quartil","Mediana","3° quartil","Máximo")
+Teste$`Peso(Kg)`<-c(round(mean(PMD$`Peso(kg)`,na.rm = T),digits=2),round(sd(PMD$`Peso(kg)`,na.rm = T),digits=2),round(var(PMD$`Peso(kg)`,na.rm = T),
+digits=2),round(min(PMD$`Peso(kg)`,na.rm = T),digits=2),round(quantile(PMD$`Peso(kg)`,probs = 0.25,na.rm = T),digits=2),round(median(PMD$`Peso(kg)`,,na.rm = T),digits=2),
+round(quantile(PMD$`Peso(kg)`,probs = 0.75,na.rm=T),digits=2),round(max(PMD$`Peso(kg)`,na.rm = T),digits=2))
+
+Teste$`Altura(m)`<-c(round(mean(PMD$`Altura(m)`,na.rm = T),digits=2),round(sd(PMD$`Altura(m)`,na.rm = T),digits=2),round(var(PMD$`Altura(m)`,na.rm = T),
+digits=2),round(min(PMD$`Altura(m)`,na.rm = T),digits=2),round(quantile(PMD$`Altura(m)`,probs = 0.25,na.rm = T),digits=2),round(median(PMD$`Altura(m)`,,na.rm = T),digits=2),
+round(quantile(PMD$`Altura(m)`,probs = 0.75,na.rm=T),digits=2),round(max(PMD$`Altura(m)`,na.rm = T),digits=2))
+Teste
+```
+
+Os atletas tem, em geral, peso entre 63 e 84 quilos e altura entre 1.70 e 1.86 metros, além disso o peso dos atletas varia mais que a altura(coeficiente de variação 0.21 e 0.06 respectivamente) . Observa se uma relação forte e positiva entre as variáveis, confirmada pelo coeficiente de spearman que assumiu o valor 0.83. Ou seja, conforme a altura aumenta o peso aumenta.
 
 # Conclusões

@@ -148,9 +148,10 @@ length(Pd$Sexo=="F")
 ###########Análise 2##############################
 PMD<-P[!duplicated(P$Nome),]
 PMD$IMC<-PMD$`Peso(kg)`/(PMD$`Altura(m)`)^2
-PA2<-PMD[PMD[,7]==c("Badminton","Judo","Gymnastics","Athletics"),]
+PA2<-PMD[PMD[,7]==c("Badminton","Judo","Gymnastics","Athletics","Football"),]
 PA2[c(PA2[,7]=="Athletics"),7]<-"Atletismo"
 PA2[c(PA2[,7]=="Gymnastics"),7]<-"Ginastica"
+PA2[c(PA2[,7]=="Football"),7]<-"Futebol"
 ggplot(PA2, aes(x = fct_reorder(Esporte, IMC, median),y=IMC))+geom_boxplot(fill = c("#A11D21"), width = 0.5)+theme_estat()+stat_summary(fun = "mean", geom = "point", shape = 23, size = 3, fill = "white")+xlab("Esporte")
 round(mean(PA2[PA2[,7]=="Judo",]$IMC,na.rm = T),digits = 2)
 PA2%>%group_by(Esporte)%>%print_quadro_resumo(var_name = IMC)
@@ -163,6 +164,7 @@ round(mean(PA2[PA2[,7]=="Badminton",]$IMC,na.rm = T),digits = 2)
 b<-round(median(PA2[PA2[,7]=="Atletismo",]$IMC,na.rm = T),digits = 2)
 d<-round(sd(PA2[PA2[,7]=="Atletismo",]$IMC,na.rm = T),digits = 2)
 (a-b)/d
+round(mean(PA2[PA2[,7]=="Futebol",]$IMC,na.rm = T),digits=2)
 Bsd<-round(sd(PA2[PA2[,7]=="Badminton",]$IMC,na.rm = T),digits = 2)
 GMe<-round(median(PA2[PA2[,7]=="Ginastica",]$IMC,na.rm = T),digits = 2)
 Gsd<-round(sd(PA2[PA2[,7]=="Ginastica",]$IMC,na.rm = T),digits = 2)
@@ -211,8 +213,30 @@ ggplot(GA3) +
     vjust = -0.5, hjust = 0.5,
     size = 3
   ) +
-  labs(x = "Nome", y = "Frequência") +
+  labs(x = "Atleta", y = "Frequência") +
   theme_estat()
 tabela<-xtabs(~PA3$Nome+PA3$Medalha)
 cramerV(tabela)
+#O coeficiente V de cramer assumiu o valor de 0.3505 demonstrando uma associação fraca-moderada.
+#############Analise 4#######################
+ggplot(PMD)+geom_point(aes(x=`Peso(kg)`,y=`Altura(m)`),colour = "#A11D21", size = 3)+theme_estat()
+cor(PMD$`Altura(m)`,PMD$`Peso(kg)` ,use= "complete.obs",method = "pearson")
+cor(PMD$`Altura(m)`,PMD$`Peso(kg)` ,use= "complete.obs",method = "spearman")
+Teste<-matrix(c(1:24),nrow=8)
+Teste<-as.data.frame(Teste)
+colnames(Teste)<-c("Medida","Peso(Kg)","Altura(m)")
+Teste$Medida<-c("Média","Desvio Padrão","Variância","Mínimo","1° quartil","Mediana","3° quartil","Máximo")
+Teste$`Peso(Kg)`<-c(round(mean(PMD$`Peso(kg)`,na.rm = T),digits=2),round(sd(PMD$`Peso(kg)`,na.rm = T),digits=2),round(var(PMD$`Peso(kg)`,na.rm = T),
+digits=2),round(min(PMD$`Peso(kg)`,na.rm = T),digits=2),round(quantile(PMD$`Peso(kg)`,probs = 0.25,na.rm = T),digits=2),round(median(PMD$`Peso(kg)`,,na.rm = T),digits=2),
+round(quantile(PMD$`Peso(kg)`,probs = 0.75,na.rm=T),digits=2),round(max(PMD$`Peso(kg)`,na.rm = T),digits=2))
 
+Teste$`Altura(m)`<-c(round(mean(PMD$`Altura(m)`,na.rm = T),digits=2),round(sd(PMD$`Altura(m)`,na.rm = T),digits=2),round(var(PMD$`Altura(m)`,na.rm = T),
+digits=2),round(min(PMD$`Altura(m)`,na.rm = T),digits=2),round(quantile(PMD$`Altura(m)`,probs = 0.25,na.rm = T),digits=2),round(median(PMD$`Altura(m)`,,na.rm = T),digits=2),
+round(quantile(PMD$`Altura(m)`,probs = 0.75,na.rm=T),digits=2),round(max(PMD$`Altura(m)`,na.rm = T),digits=2))
+
+coefV<-function(x) {
+  y<-sd(x,na.rm = T)/mean(x,na.rm = T)
+  return(y)
+}
+coefV(PMD$`Altura(m)`)
+coefV(PMD$`Peso(kg)`)
