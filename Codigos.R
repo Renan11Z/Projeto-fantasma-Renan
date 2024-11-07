@@ -26,17 +26,17 @@ print_quadro_resumo <- function(data, var_name, title="Medidas resumo
 da(o) [nome da variável]", label="quad:quadro_resumo1") {
   var_name <- substitute(var_name)
   data <- data %>%
-    summarize(`Média` = round(mean(!!sym(var_name)),2),
-              `Desvio Padrão` = round(sd(!!sym(var_name)),2),
-              `Variância` = round(var(!!sym(var_name)),2),
-              `Mínimo` = round(min(!!sym(var_name)),2),
+    summarize(`Média` = round(mean(!!sym(var_name),na.rm = T),2),
+              `Desvio Padrão` = round(sd(!!sym(var_name),na.rm = T),2),
+              `Variância` = round(var(!!sym(var_name),na.rm = T),2),
+              `Mínimo` = round(min(!!sym(var_name),na.rm = T),2),
               `1º Quartil` = round(quantile(!!sym(var_name), probs =
                                               .25,na.rm = TRUE),2),
               `Mediana` = round(quantile(!!sym(var_name), probs = .5,na.rm = TRUE)
                                 ,2),
               `3º Quartil` = round(quantile(!!sym(var_name), probs =
                                               .75,na.rm = TRUE),2),
-              `Máximo` = round(max(!!sym(var_name)),2)) %>%
+              `Máximo` = round(max(!!sym(var_name),na.rm = T),2)) %>%
     t() %>%
     as.data.frame() %>%
     rownames_to_column()
@@ -169,6 +169,7 @@ Bsd<-round(sd(PA2[PA2[,7]=="Badminton",]$IMC,na.rm = T),digits = 2)
 GMe<-round(median(PA2[PA2[,7]=="Ginastica",]$IMC,na.rm = T),digits = 2)
 Gsd<-round(sd(PA2[PA2[,7]=="Ginastica",]$IMC,na.rm = T),digits = 2)
 (GM-GMe)/Gsd
+mean(PA2$IMC,na.rm = T)
 print_quadro_resumo(PA2,var_name = IMC)
 #####################Analise 3###############################
 #descobrindo os maiores medalhistas
@@ -215,24 +216,30 @@ ggplot(GA3) +
   ) +
   labs(x = "Atleta", y = "Frequência") +
   theme_estat()
+#############################
+GA3$Medalha<-fct_relevel(c(GA3$Medalha),ordem)
+ggplot(GA3) +
+  aes(
+    x = fct_reorder(Nome, Nome, .desc = T), y = freq,
+    fill = Medalha, label = legendas
+  ) +
+  geom_col(position = position_dodge2(preserve = "single", padding =
+                                        0)) +
+  geom_text(
+    position = position_dodge(width = .9),
+    vjust = -0.5, hjust = 0.5,
+    size = 3
+  ) +
+  labs(x = "Atleta", y = "Frequência") +
+  theme_estat()
+#############################
 tabela<-xtabs(~PA3$Nome+PA3$Medalha)
 cramerV(tabela)
 #O coeficiente V de cramer assumiu o valor de 0.3505 demonstrando uma associação fraca-moderada.
 #############Analise 4#######################
-ggplot(PMD)+geom_point(aes(x=`Peso(kg)`,y=`Altura(m)`),colour = "#A11D21", size = 3)+theme_estat()
+ggplot(PMD)+geom_point(aes(x=`Peso(kg)`,y=`Altura(m)`),colour = "#A11D21", size = 2,alpha=0.5)+theme_estat()
 cor(PMD$`Altura(m)`,PMD$`Peso(kg)` ,use= "complete.obs",method = "pearson")
 cor(PMD$`Altura(m)`,PMD$`Peso(kg)` ,use= "complete.obs",method = "spearman")
-Teste<-matrix(c(1:24),nrow=8)
-Teste<-as.data.frame(Teste)
-colnames(Teste)<-c("Medida","Peso(Kg)","Altura(m)")
-Teste$Medida<-c("Média","Desvio Padrão","Variância","Mínimo","1° quartil","Mediana","3° quartil","Máximo")
-Teste$`Peso(Kg)`<-c(round(mean(PMD$`Peso(kg)`,na.rm = T),digits=2),round(sd(PMD$`Peso(kg)`,na.rm = T),digits=2),round(var(PMD$`Peso(kg)`,na.rm = T),
-digits=2),round(min(PMD$`Peso(kg)`,na.rm = T),digits=2),round(quantile(PMD$`Peso(kg)`,probs = 0.25,na.rm = T),digits=2),round(median(PMD$`Peso(kg)`,,na.rm = T),digits=2),
-round(quantile(PMD$`Peso(kg)`,probs = 0.75,na.rm=T),digits=2),round(max(PMD$`Peso(kg)`,na.rm = T),digits=2))
-
-Teste$`Altura(m)`<-c(round(mean(PMD$`Altura(m)`,na.rm = T),digits=2),round(sd(PMD$`Altura(m)`,na.rm = T),digits=2),round(var(PMD$`Altura(m)`,na.rm = T),
-digits=2),round(min(PMD$`Altura(m)`,na.rm = T),digits=2),round(quantile(PMD$`Altura(m)`,probs = 0.25,na.rm = T),digits=2),round(median(PMD$`Altura(m)`,,na.rm = T),digits=2),
-round(quantile(PMD$`Altura(m)`,probs = 0.75,na.rm=T),digits=2),round(max(PMD$`Altura(m)`,na.rm = T),digits=2))
 
 coefV<-function(x) {
   y<-sd(x,na.rm = T)/mean(x,na.rm = T)
@@ -240,3 +247,4 @@ coefV<-function(x) {
 }
 coefV(PMD$`Altura(m)`)
 coefV(PMD$`Peso(kg)`)
+print_quadro_resumo(PMD,Peso(kg))
